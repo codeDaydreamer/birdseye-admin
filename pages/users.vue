@@ -1,0 +1,6 @@
+<template>
+    <UsersHeader />
+    <UserTable />
+    
+    </template>
+  
