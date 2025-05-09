@@ -21,33 +21,50 @@
       </select>
     </div>
 
-    <!-- Users Table -->
-    <table class="table table-zebra w-full text-sm dark:text-dark-text border border-light-border dark:border-dark-border">
-      <thead class="bg-light-accent dark:bg-dark-accent p-3">
-        <tr>
-          <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Name</th>
-          <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Email</th>
-          <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Role</th>
-          <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Subscription</th>
-          <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Status</th>
-          <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Last Login</th>
-        </tr>
-      </thead>
-      <tbody class="transition-all duration-300 ease-in-out">
-        <tr v-for="user in paginatedUsers" :key="user.id" class="hover:bg-light-subtext dark:hover:bg-dark-accent">
-          <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.name }}</td>
-          <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.email }}</td>
-          <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.role }}</td>
-          <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.subscription }}</td>
-          <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">
-            <span :class="user.status === 'active' ? 'text-success' : 'text-danger'">
-              {{ user.status }}
-            </span>
-          </td>
-          <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.lastLogin }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Scrollable Table Wrapper -->
+    <div class="overflow-x-auto max-w-full">
+      <table class="table table-zebra w-full text-sm dark:text-dark-text border border-light-border dark:border-dark-border min-w-[1200px]">
+        <thead class="bg-light-accent dark:bg-dark-accent p-3">
+          <tr>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Name</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Email</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Contact</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Role</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Subscription Plan</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Start Date</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Billing Email</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Status</th>
+            <th class="p-3 border-b border-r border-light-border dark:border-dark-border">Last Login</th>
+          </tr>
+        </thead>
+        <tbody class="transition-all duration-300 ease-in-out">
+          <tr 
+            v-for="user in paginatedUsers" 
+            :key="user.id" 
+            class="hover:bg-light-subtext dark:hover:bg-dark-accent cursor-pointer"
+            @click="goToUser(user.id)"
+          >
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.name }}</td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.email }}</td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.contact }}</td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.role }}</td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.subscription.plan }}</td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">
+              {{ formatDate(user.subscription.startDate) }}
+            </td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">{{ user.billing_info.billingEmail }}</td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">
+              <span :class="user.status === 'active' ? 'text-success' : 'text-danger'">
+                {{ user.status }}
+              </span>
+            </td>
+            <td class="px-4 py-2 border-b border-r border-light-border dark:border-dark-border">
+              {{ formatDate(user.lastLogin) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Pagination -->
     <div class="flex justify-between items-center mt-4">
@@ -58,12 +75,9 @@
       >
         Previous
       </button>
-
-      <!-- Page Information -->
       <span class="text-sm text-gray-700 dark:text-gray-300">
         Page {{ currentPage }} of {{ totalPages }}
       </span>
-
       <button 
         @click="currentPage < totalPages && currentPage++" 
         :disabled="currentPage >= totalPages"
@@ -78,48 +92,54 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useUsersStore } from '@/stores/userStore'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const store = useUsersStore()
 
-// Reactive state for search query, filters, and pagination
 const searchQuery = ref('')
 const selectedRole = ref('')
 const selectedStatus = ref('')
 const currentPage = ref(1)
 const usersPerPage = 10
 
-// Fetch users from the store
 onMounted(() => {
-  store.loadUsers()  // Populate the users store
+  store.loadUsers()
 })
 
-// Computed property to filter users based on search and filter criteria
+const goToUser = (id) => {
+  router.push(`/user/${id}`)
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  }).format(new Date(dateString))
+}
+
 const filteredUsers = computed(() => {
-  return store.users
-    .filter(user => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-      const matchesRole = selectedRole.value ? user.role === selectedRole.value : true
-      const matchesStatus = selectedStatus.value ? user.status === selectedStatus.value : true
-
-      return matchesSearch && matchesRole && matchesStatus
-    })
+  return store.users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                          user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesRole = selectedRole.value ? user.role === selectedRole.value : true
+    const matchesStatus = selectedStatus.value ? user.status === selectedStatus.value : true
+    return matchesSearch && matchesRole && matchesStatus
+  })
 })
 
-// Computed property to get the users for the current page
 const paginatedUsers = computed(() => {
   const startIndex = (currentPage.value - 1) * usersPerPage
   const endIndex = startIndex + usersPerPage
   return filteredUsers.value.slice(startIndex, endIndex)
 })
 
-// Computed property for total pages
 const totalPages = computed(() => {
   return Math.ceil(filteredUsers.value.length / usersPerPage)
 })
 </script>
 
 <style scoped>
-/* Custom Styling (if needed) */
+/* Optional: You can add max-width constraints if needed */
 </style>
