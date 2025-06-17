@@ -1,119 +1,109 @@
 <template>
-    <section class="w-full pt-6">
-      <div class="shadow-md bg-light-accent dark:bg-dark-accent p-6 rounded-lg">
-        <!-- Chart Header -->
-        <div class="text-center mb-4">
-          <h2 class="text-xl font-semibold text-light-text dark:text-dark-text">
-            Daily Logged-In Users (This Week)
-          </h2>
-          <p class="text-sm text-light-subtext dark:text-dark-subtext">
-            A summary of how many users logged into the system each day.
-          </p>
-        </div>
-  
-        <!-- Chart Canvas -->
-        <div class="p-2 rounded-lg">
-          <canvas ref="chartCanvas" class="w-full h-52"></canvas>
-        </div>
-      </div>
-    </section>
-  </template>
-  
-  <script>
-  import { ref, onMounted } from 'vue'
+  <div class="w-full max-w-3xl mx-auto rounded-xl shadow-md p-4 bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text">
+    <h2 class="text-xl font-semibold mb-4">Weekly Login Trend</h2>
+    <div class="relative h-[300px]"> <!-- ✅ FIXED HEIGHT -->
+      <canvas ref="chartRef" class="absolute inset-0" />
+    </div>
+  </div>
+</template>
+
+
+<script setup>
+import { ref, onMounted, watch } from 'vue'
+import { useStatsStore } from '@/stores/stats'
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
+  Chart,
+  LineController,
   LineElement,
   PointElement,
+  LinearScale,
+  CategoryScale,
   Title,
   Tooltip,
   Legend,
-  LineController
 } from 'chart.js'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-  LineController
-)
+// Register Chart.js components
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend)
 
-export default {
-  setup() {
-    const chartCanvas = ref(null)
+const chartRef = ref(null)
+const statsStore = useStatsStore()
+let chartInstance = null
 
-    onMounted(() => {
-      const ctx = chartCanvas.value.getContext('2d')
-
-      // Detect current theme via Tailwind class
-      const isDark = document.documentElement.classList.contains('dark')
-      const tickColor = isDark ? '#d1d5db' : '#374151' // light-subtext vs dark-subtext Tailwind color hex
-
-      // Create gradient fill
-      const gradient = ctx.createLinearGradient(0, 0, 0, 200)
-      gradient.addColorStop(0, 'rgba(37, 99, 235, 0.4)') // Blue-600 @ 40%
-      gradient.addColorStop(1, 'rgba(37, 99, 235, 0)')   // Fully transparent
-
-      const chartData = {
-        labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        datasets: [
-          {
-            label: 'Logged-In Users',
-            data: [42, 55, 48, 60, 52, 70, 66],
-            borderColor: '#2563eb',
-            backgroundColor: gradient,
-            pointBackgroundColor: '#2563eb',
-            tension: 0,
-            fill: true,
-          },
-        ],
-      }
-
-      const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: true },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: tickColor,
-            },
-            grid: {
-              display: false,
-            },
-          },
-          y: {
-            ticks: {
-              color: tickColor,
-            },
-            grid: {
-              color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-            },
-          },
-        },
-      }
-
-      new ChartJS(ctx, {
-        type: 'line',
-        data: chartData,
-        options: chartOptions,
-      })
-    })
-
-    return {
-      chartCanvas,
-    }
-  }
+// Helper: Format dates into weekday labels
+const formatDateToLabel = (dateStr) => {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('en-US', { weekday: 'short' }) // e.g., "Mon", "Tue"
 }
 
-  </script>
-  
+const renderChart = () => {
+  const trendData = statsStore.statsDailyLoginTrend
+  if (!trendData.length || !chartRef.value) return
+
+  const labels = trendData.map(item => formatDateToLabel(item.date))
+  const dataPoints = trendData.map(item => item.count)
+
+  // Destroy old chart if exists
+  if (chartInstance) chartInstance.destroy()
+
+  chartInstance = new Chart(chartRef.value, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Logins',
+          data: dataPoints,
+          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--tw-color-primary') || '#249225',
+          backgroundColor: 'rgba(36, 146, 37, 0.2)', // light green fill
+          tension: 0.4,
+          pointRadius: 5,
+          pointBackgroundColor: '#F4C542', // secondary
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--tw-text-light-text') || '#1F2937',
+          },
+          grid: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--tw-color-light-border') || '#8B4513',
+          }
+        },
+        x: {
+          ticks: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--tw-text-light-subtext') || '#6B7280',
+          },
+          grid: {
+            color: 'transparent',
+          }
+        },
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--tw-text-light-text') || '#1F2937',
+          }
+        },
+      },
+    }
+  })
+}
+
+onMounted(async () => {
+  if (!statsStore.statsDailyLoginTrend.length) {
+    await statsStore.fetchStats()
+  }
+  renderChart()
+})
+
+watch(() => statsStore.statsDailyLoginTrend, renderChart, { deep: true });
+</script>
+
+
