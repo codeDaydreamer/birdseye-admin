@@ -22,30 +22,36 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useAdminAuthStore } from '~/stores/adminAuth'
 
-const isCollapsed = ref(false);
-const isMobile = ref(false);
+const isCollapsed = ref(false)
+const isMobile = ref(false)
+const authStore = useAdminAuthStore()
+
+// Resize handler
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
+// Restore token & check screen size
+onMounted(() => {
+  authStore.restoreToken()
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+// Cleanup
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkMobile)
+})
 
 // Toggle Sidebar
 const toggleSidebar = () => {
-  isCollapsed.value = !isCollapsed.value;
-};
-
-// Check screen size for mobile/tablet
-onMounted(() => {
-  const checkMobile = () => {
-    isMobile.value = window.innerWidth < 768; // Adjust based on your breakpoint
-  };
-
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-
-  return () => {
-    window.removeEventListener('resize', checkMobile);
-  };
-});
+  isCollapsed.value = !isCollapsed.value
+}
 </script>
+
 
 <style scoped>
 /* Sidebar transition for width */
@@ -66,10 +72,10 @@ main {
 /* Optional: Add responsive behavior for smaller screens */
 @media (max-width: 768px) {
   .ml-64 {
-    margin-left: 0 !important; /* Full width on mobile */
+    margin-left: 0 !important;
   }
   .ml-16 {
-    margin-left: 0 !important; /* Full width on mobile */
+    margin-left: 0 !important;
   }
 }
 </style>

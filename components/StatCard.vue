@@ -46,12 +46,28 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useStatsStore } from '~/stores/stats' 
+import { onMounted, watch } from 'vue'
+import { useStatsStore } from '~/stores/stats'
+import { useAdminAuthStore } from '~/stores/adminAuth'
 
 const statsStore = useStatsStore()
+const authStore = useAdminAuthStore()
 
+// Fetch immediately if token already exists
 onMounted(() => {
-  statsStore.fetchStats()
+  if (authStore.token) {
+    statsStore.fetchStats()
+  }
 })
+
+// Watch for token changes, fetch when token becomes available
+watch(
+  () => authStore.token,
+  (token) => {
+    if (token) {
+      statsStore.fetchStats()
+    }
+  }
+)
 </script>
+

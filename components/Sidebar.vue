@@ -110,51 +110,47 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAdminAuthStore } from '~/stores/adminAuth'  // Adjust path if needed
 
 const props = defineProps({
   isCollapsed: {
     type: Boolean,
     required: true,
   }
-});
+})
 
-const emit = defineEmits(['toggleSidebar']);
-const router = useRouter();
+const emit = defineEmits(['toggleSidebar'])
+const router = useRouter()
+const adminAuth = useAdminAuthStore()
 
 const toggleSidebar = () => {
-  emit('toggleSidebar');
-};
+  emit('toggleSidebar')
+}
 
-const isMobile = ref(false);
+const isMobile = ref(false)
 
-// Check screen size for mobile/tablet
 onMounted(() => {
   const checkMobile = () => {
-    isMobile.value = window.innerWidth < 768; // Adjust based on your breakpoint
-  };
-
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-
+    isMobile.value = window.innerWidth < 768
+  }
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
   return () => {
-    window.removeEventListener('resize', checkMobile);
-  };
-});
+    window.removeEventListener('resize', checkMobile)
+  }
+})
 
-// Check if the current route is active
 const isActive = (route) => {
-  return router.currentRoute.value.path === route;
-};
+  return router.currentRoute.value.path === route
+}
 
-// Handle logout functionality
 const logout = () => {
-  // Add your logout logic here (e.g., clearing tokens, redirecting, etc.)
-  console.log('Logging out...');
-  router.push('/login'); // Redirect to login page after logout
-};
+  adminAuth.logout()
+}
 </script>
+
 
 <style scoped>
 /* Optional: Customize the transition for collapsing */
