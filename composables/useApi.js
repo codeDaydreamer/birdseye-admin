@@ -6,7 +6,7 @@ export function useApi() {
   const config = useRuntimeConfig()
 
   const api = axios.create({ 
-    baseURL: config.public.apiBaseURL,
+    baseURL: "https://server.birdseye-poultry.com",
     headers: { 'Content-Type': 'application/json' }
   })
 
