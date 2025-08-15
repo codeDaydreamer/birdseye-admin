@@ -7,7 +7,8 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     token: '',
     loading: false,
     error: '',
-    router: null,  // store router instance here
+    router: null,        // store router instance here
+    allowRegistration: false, // <-- NEW FLAG
   }),
 
   actions: {
@@ -15,13 +16,28 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       this.router = router
     },
 
+    enableRegistration() {
+      this.allowRegistration = true
+    },
+
+    disableRegistration() {
+      this.allowRegistration = false
+    },
+
     async registerAdmin(data) {
+      if (!this.allowRegistration) {
+        this.error = 'Admin registration is disabled'
+        return
+      }
+
       this.loading = true
       this.error = ''
       try {
         const api = useApi()
         const res = await api.post('/auth/admin/register', data)
         this.admin = res.data
+        // Optionally disable registration after adding an admin
+        this.allowRegistration = false
       } catch (err) {
         this.error = err.response?.data?.error || err.message
       } finally {
@@ -104,5 +120,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     isAuthenticated: (state) => !!state.token,
     getAdmin: (state) => state.admin,
     getToken: (state) => state.token,
+    canRegister: (state) => state.allowRegistration, // optional getter for easy access
   },
 })
