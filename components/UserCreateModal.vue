@@ -15,7 +15,7 @@
           aria-label="Close modal"
           class="absolute top-4 right-4 text-light-text dark:text-dark-text hover:text-primary transition"
         >
-          ✕
+          <i class="mdi mdi-close"></i>
         </button>
 
         <h2

@@ -16,8 +16,8 @@
       </div>
 
       <div class="text-white text-xs flex flex-col sm:flex-row sm:space-x-2">
-        <span v-if="!dbConnected">⚠️ Database not connected</span>
-        <span v-if="!googleReady">⚠️ Google Auth not configured</span>
+        <span v-if="!dbConnected"><i class="mdi mdi-alert-outline"></i> Database not connected</span>
+        <span v-if="!googleReady"><i class="mdi mdi-alert-outline"></i> Google Auth not configured</span>
       </div>
     </div>
 

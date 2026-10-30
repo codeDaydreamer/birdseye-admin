@@ -5,7 +5,7 @@
   >
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-light-text dark:text-dark-text">User Details</h3>
-      <button class="btn btn-sm btn-ghost" @click="$emit('close')">✕</button>
+      <button class="btn btn-sm btn-ghost" @click="$emit('close')" aria-label="Close"><i class="mdi mdi-close"></i></button>
     </div>
 
     <div class="space-y-3 text-sm text-light-text dark:text-dark-text">

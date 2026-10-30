@@ -1,7 +1,7 @@
 <template>
   <div class="w-full max-w-3xl mx-auto rounded-xl shadow-md p-4 bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text">
     <h2 class="text-xl font-semibold mb-4">Weekly Login Trend</h2>
-    <div class="relative h-[300px]"> <!-- ✅ FIXED HEIGHT -->
+    <div class="relative h-[300px]"> <!-- fixed height -->
       <canvas ref="chartRef" class="absolute inset-0" />
     </div>
   </div>
