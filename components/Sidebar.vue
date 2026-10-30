@@ -80,6 +80,7 @@ const menuItems = [
   { to: '/', label: 'Dashboard', icon: 'mdi mdi-view-dashboard-outline' },
   { to: '/users', label: 'Users', icon: 'mdi mdi-account-group' },
   { to: '/subscriptions', label: 'Subscriptions', icon: 'mdi mdi-credit-card-outline' },
+  { to: '/pricing', label: 'Pricing', icon: 'mdi mdi-tag-multiple-outline' },
   { to: '/reports', label: 'Reports', icon: 'mdi mdi-file-chart' },
   { to: '/system-logs', label: 'System Logs', icon: 'mdi mdi-shield-lock-outline' },
   { to: '/settings', label: 'Settings', icon: 'mdi mdi-cog-outline' }

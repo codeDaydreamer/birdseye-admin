@@ -31,7 +31,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBaseURL: process.env.API_BASE_URL || 'http://localhost:8080'
+      // Override with NUXT_PUBLIC_API_BASE_URL (e.g. http://localhost:8080 for local development)
+      apiBaseURL: process.env.API_BASE_URL || 'https://server.birdseye-poultry.com'
     }
   }
 })
