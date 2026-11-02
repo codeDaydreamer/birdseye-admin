@@ -77,11 +77,16 @@ const router = useRouter()
 const adminAuth = useAdminAuthStore()
 
 const menuItems = [
-  { to: '/', label: 'Dashboard', icon: 'mdi mdi-view-dashboard-outline' },
+  { to: '/', label: 'Overview', icon: 'mdi mdi-view-dashboard-outline' },
+  { to: '/farms', label: 'Farms', icon: 'mdi mdi-barn' },
   { to: '/users', label: 'Users', icon: 'mdi mdi-account-group' },
+  { to: '/activity', label: 'Activity', icon: 'mdi mdi-timeline-text-outline' },
+  { to: '/payments', label: 'Payments', icon: 'mdi mdi-cellphone-check' },
   { to: '/subscriptions', label: 'Subscriptions', icon: 'mdi mdi-credit-card-outline' },
   { to: '/pricing', label: 'Pricing', icon: 'mdi mdi-tag-multiple-outline' },
   { to: '/reports', label: 'Reports', icon: 'mdi mdi-file-chart' },
+  { to: '/system', label: 'System health', icon: 'mdi mdi-heart-pulse' },
+  { to: '/audit', label: 'Audit log', icon: 'mdi mdi-text-box-search-outline' },
   { to: '/system-logs', label: 'System Logs', icon: 'mdi mdi-shield-lock-outline' },
   { to: '/settings', label: 'Settings', icon: 'mdi mdi-cog-outline' }
 ]
@@ -89,6 +94,6 @@ const menuItems = [
 const toggleCollapse = () => emit('toggleCollapse')
 const toggleMobile = () => emit('toggleMobile')
 
-const isActive = (route) => router.currentRoute.value.path === route
+const isActive = (route) => route === '/' ? router.currentRoute.value.path === '/' : router.currentRoute.value.path.startsWith(route)
 const logout = () => adminAuth.logout()
 </script>
