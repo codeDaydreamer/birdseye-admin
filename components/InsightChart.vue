@@ -66,7 +66,22 @@ function render() {
   })
 }
 
-onMounted(render)
+// Redraw when the theme changes so axis and grid colours match
+let observer
+onMounted(() => {
+  render()
+  let wasDark = dark()
+  observer = new MutationObserver(() => {
+    if (dark() !== wasDark) {
+      wasDark = dark()
+      render()
+    }
+  })
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+})
 watch(() => [props.labels, props.datasets], render, { deep: true })
-onBeforeUnmount(() => chart?.destroy())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  chart?.destroy()
+})
 </script>

@@ -105,7 +105,8 @@ onMounted(() => {
 
 
 <template>
-  <section class="min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg p-6" aria-label="Admin Authentication">
+  <section class="relative min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg p-6" aria-label="Admin Authentication">
+    <div class="absolute right-4 top-4"><ThemeToggle /></div>
     <!-- Logo Area -->
     <div class="flex justify-center mb-10">
       <svg class="w-20 h-20 text-primary dark:text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

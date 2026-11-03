@@ -23,6 +23,7 @@
 
       <!-- Right section with notifications and profile -->
       <div class="flex items-center space-x-6">
+        <ThemeToggle />
         <!-- Desktop version with text -->
         <div class="hidden md:flex items-center space-x-2">
           <button class="flex items-center space-x-2">
