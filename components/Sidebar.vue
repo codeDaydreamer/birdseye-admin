@@ -86,6 +86,7 @@ const menuItems = [
   { to: '/pricing', label: 'Pricing', icon: 'mdi mdi-tag-multiple-outline' },
   { to: '/reports', label: 'Reports', icon: 'mdi mdi-file-chart' },
   { to: '/system', label: 'System health', icon: 'mdi mdi-heart-pulse' },
+  { to: '/keys', label: 'Keys', icon: 'mdi mdi-key-chain-variant' },
   { to: '/audit', label: 'Audit log', icon: 'mdi mdi-text-box-search-outline' },
   { to: '/system-logs', label: 'System Logs', icon: 'mdi mdi-shield-lock-outline' },
   { to: '/settings', label: 'Settings', icon: 'mdi mdi-cog-outline' }
