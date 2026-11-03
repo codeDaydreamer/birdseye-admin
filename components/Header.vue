@@ -1,14 +1,15 @@
 <template>
   <header class="bg-white text-light-text border-b border-light-border dark:border-dark-border dark:bg-dark-bg dark:text-dark-text relative">
-    <div class="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="max-w-screen-xl mx-auto px-4 py-3 md:py-4 flex items-center justify-between">
       
       <!-- Left section with logo and mobile menu button -->
-      <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2 md:space-x-4">
         <!-- Mobile toggle button (Hamburger) -->
         <button
           v-if="isMobile"
           @click="$emit('toggleMobile')"
-          class="p-2 bg-light-accent dark:bg-dark-accent rounded-full shadow fixed top-4 left-4 z-50"
+          class="p-2 -ml-1 rounded-full hover:bg-light-input dark:hover:bg-dark-accent"
+          aria-label="Open menu"
         >
           <i class="mdi mdi-menu text-xl"></i>
         </button>
@@ -17,12 +18,12 @@
         <img 
           src="/birdseye-logo.png" 
           alt="Birdseye Logo" 
-          class="h-10 md:h-12" 
+          class="h-9 md:h-12" 
         />
       </div>
 
       <!-- Right section with notifications and profile -->
-      <div class="flex items-center space-x-6">
+      <div class="flex items-center space-x-3 md:space-x-6">
         <ThemeToggle />
         <!-- Desktop version with text -->
         <div class="hidden md:flex items-center space-x-2">
