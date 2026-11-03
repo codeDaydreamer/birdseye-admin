@@ -2,7 +2,7 @@
   <aside
     :class="[
       'h-screen fixed top-0 left-0 z-40 shadow-lg flex flex-col transition-all duration-300',
-      'bg-primary text-light-text dark:bg-dark-bg dark:text-dark-text',
+      'bg-neutral-950 text-neutral-300 dark:bg-dark-bg dark:text-dark-text border-r border-white/5',
       isMobile
         ? 'w-64 transform ' + (isOpen ? 'translate-x-0' : '-translate-x-full')
         : isCollapsed
@@ -10,8 +10,8 @@
           : 'w-64'
     ]"
   >
-    <div class="relative h-16 flex items-center justify-between px-4 border-b border-light-border dark:border-dark-border">
-      <div class="flex items-center space-x-2 text-xl font-bold tracking-wide">
+    <div class="relative h-16 flex items-center justify-between px-4 border-b border-white/10">
+      <div class="flex items-center space-x-2 text-xl font-bold tracking-wide text-white">
         <i class="mdi mdi-chicken"></i>
         <span v-if="!isCollapsed || isMobile" class="whitespace-nowrap">Birdseye Admin</span>
       </div>
@@ -20,7 +20,7 @@
       <button
         v-if="!isMobile"
         @click="toggleCollapse"
-        class="p-2 bg-light-accent dark:bg-dark-accent rounded-full shadow"
+        class="p-2 bg-white/10 text-white hover:bg-white/20 rounded-full"
       >
         <i :class="isCollapsed ? 'mdi mdi-chevron-right' : 'mdi mdi-chevron-left'"></i>
       </button>
@@ -29,7 +29,7 @@
       <button
         v-if="isMobile"
         @click="toggleMobile"
-        class="p-2 bg-light-accent dark:bg-dark-accent rounded-full shadow"
+        class="p-2 bg-white/10 text-white hover:bg-white/20 rounded-full"
       >
         <i class="mdi mdi-close"></i>
       </button>
@@ -41,8 +41,8 @@
         v-for="item in menuItems"
         :key="item.to"
         :to="item.to"
-        class="flex items-center space-x-3 p-3 rounded-md hover:bg-light-accent dark:hover:bg-dark-accent transition-all"
-        :class="{ 'bg-light-accent dark:bg-dark-accent': isActive(item.to) }"
+        class="flex items-center space-x-3 p-3 rounded-md border-l-2 hover:bg-white/5 hover:text-white transition-all"
+        :class="isActive(item.to) ? 'bg-white/10 text-white border-primary' : 'border-transparent'"
       >
         <i :class="item.icon"></i>
         <span v-if="!isCollapsed || isMobile">{{ item.label }}</span>
@@ -53,7 +53,7 @@
     <div class="p-4">
       <button
         @click="logout"
-        class="w-full flex items-center space-x-3 p-3 rounded-md hover:bg-light-accent dark:hover:bg-dark-accent transition-all"
+        class="w-full flex items-center space-x-3 p-3 rounded-md hover:bg-white/5 hover:text-white transition-all"
       >
         <i class="mdi mdi-logout"></i>
         <span v-if="!isCollapsed || isMobile">Logout</span>

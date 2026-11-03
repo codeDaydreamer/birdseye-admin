@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-primary text-light-text dark:bg-dark-bg dark:text-dark-text py-4">
+    <footer class="border-t border-light-border dark:border-dark-border text-light-subtext dark:text-dark-subtext text-sm py-4">
       <div class="max-w-screen-xl mx-auto text-center">
         <p>&copy; {{ currentYear }} Birdseye Poultry. All rights reserved.</p>
       </div>

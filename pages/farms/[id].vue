@@ -28,7 +28,7 @@
         <section class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4 xl:col-span-2">
           <h2 class="font-semibold mb-3">Records per day (30 days)</h2>
           <InsightChart type="bar" height="200px" :labels="d.activity.map((x) => new Date(x.day + 'T00:00:00').toLocaleDateString('en-KE', { day: 'numeric', month: 'short' }))"
-            :datasets="[{ label: 'Records', data: d.activity.map((x) => x.count), color: '#249225' }]" label="Records per day" />
+            :datasets="[{ label: 'Records', data: d.activity.map((x) => x.count), color: '#2563EB' }]" label="Records per day" />
           <div class="mt-3 flex flex-wrap gap-2 text-xs">
             <span v-for="(n, k) in d.last_30_days.records" :key="k" class="px-2 py-1 rounded-full bg-light-bg dark:bg-dark-bg">{{ recordLabel[k] || k }}: <strong>{{ n }}</strong></span>
           </div>

@@ -107,23 +107,18 @@ onMounted(() => {
 <template>
   <section class="relative min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg p-6" aria-label="Admin Authentication">
     <div class="absolute right-4 top-4"><ThemeToggle /></div>
-    <!-- Logo Area -->
-    <div class="flex justify-center mb-10">
-      <svg class="w-20 h-20 text-primary dark:text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-      </svg>
+    <!-- Brand -->
+    <div class="flex flex-col items-center mb-8 text-center">
+      <img src="/birdseye-logo.svg" alt="" class="h-14 w-14 mb-4" />
+      <h2 class="text-2xl font-semibold tracking-tight text-light-text dark:text-dark-text">Birdseye Admin</h2>
+      <p class="mt-1 text-sm text-light-subtext dark:text-dark-subtext" aria-live="polite">{{ isLogin ? 'Sign in to the console' : 'Create an admin account' }}</p>
     </div>
-
-    <!-- Welcome Message -->
-    <h2 class="text-center text-2xl font-semibold mb-6 text-primary dark:text-secondary tracking-wide" aria-live="polite">
-      {{ isLogin ? 'Welcome back, Sudo User!!' : 'Hey there, Sudo User!!' }}
-    </h2>
 
     <!-- Form Container -->
     <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg p-10 border border-gray-200 dark:border-gray-700">
       <transition name="fade-slide" mode="out-in">
         <form :key="isLogin" @submit.prevent="handleSubmit" autocomplete="on" novalidate class="space-y-6" aria-live="polite">
-          <h1 class="text-3xl font-extrabold text-primary dark:text-secondary text-center mb-8 tracking-wide">
+          <h1 class="text-xl font-semibold text-light-text dark:text-dark-text mb-6">
             {{ isLogin ? 'Admin Login' : 'Admin Registration' }}
           </h1>
 

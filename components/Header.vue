@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-primary text-light-text dark:bg-dark-bg dark:text-dark-text shadow-md relative">
+  <header class="bg-white text-light-text border-b border-light-border dark:border-dark-border dark:bg-dark-bg dark:text-dark-text relative">
     <div class="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
       
       <!-- Left section with logo and mobile menu button -->

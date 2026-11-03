@@ -15,13 +15,14 @@ const config: Config = {
         custom: "1390px",
       },
       colors: {
-        primary: '#249225',
-        secondary: '#F4C542',
-        'light-bg': '#F5F5DC',
-        'light-text': '#1F2937',
-        'light-border': '#8B4513',
-        'light-accent': '#F0D8B6',
-        'light-input': '#E5E7EB',
+        // Corporate theme: black and white with an 816 Dynamics blue accent
+        primary: '#2563EB',
+        secondary: '#1D4ED8',
+        'light-bg': '#F5F6F8',
+        'light-text': '#0A0A0A',
+        'light-border': '#E2E8F0',
+        'light-accent': '#FFFFFF',
+        'light-input': '#F1F5F9',
         'dark-bg': '#1F2937',
         'dark-text': '#E5E7EB',
         'dark-border': '#4B5563',
@@ -34,7 +35,7 @@ const config: Config = {
         'warning': '#FBBF24',
         'accent-orange': '#FF8C00',
         'trust-blue': '#2F4F4F',
-        'light-subtext': '#6B7280',
+        'light-subtext': '#64748B',
       },
       textColor: {
         inherit: 'inherit',
@@ -43,34 +44,6 @@ const config: Config = {
   },
   darkMode: 'class',
   plugins: [],
-  daisyui: {
-    themes: [
-      {
-        light: {
-          primary: "#6B8E23",
-          secondary: "#F4C542",
-          accent: "#ADD8E6",
-          neutral: "#F5F5DC",
-          "base-100": "#F5F5DC",
-          "base-content": "#1F2937",
-          "base-border": "#8B4513",
-          "base-input": "#E5E7EB",
-        },
-      },
-      {
-        dark: {
-          primary: "#6B8E23",
-          secondary: "#F4C542",
-          accent: "#ADD8E6",
-          neutral: "#4B5563",
-          "base-100": "#1F2937",
-          "base-content": "#E5E7EB",
-          "base-border": "#4B5563",
-          "base-input": "#1F2937",
-        },
-      },
-    ],
-  },
 }
 
 export default config

@@ -41,14 +41,14 @@
         <section class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4">
           <h2 class="font-semibold">Farms recording each day</h2>
           <p class="text-xs text-light-subtext dark:text-dark-subtext mb-3">Distinct farms that logged eggs, sales, expenses, birds, vaccinations or batches.</p>
-          <InsightChart type="line" :labels="labels" :datasets="[{ label: 'Active farms', data: d.series.active_farms.map((x) => x.count), color: '#249225', fill: true }]" label="Active farms per day" />
+          <InsightChart type="line" :labels="labels" :datasets="[{ label: 'Active farms', data: d.series.active_farms.map((x) => x.count), color: '#2563EB', fill: true }]" label="Active farms per day" />
         </section>
         <section class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4">
           <h2 class="font-semibold">Sign-ups</h2>
           <p class="text-xs text-light-subtext dark:text-dark-subtext mb-3">New users and new farms per day.</p>
           <InsightChart type="bar" :labels="labels" :datasets="[
-            { label: 'Users', data: d.series.signups.map((x) => x.count), color: '#F4C542' },
-            { label: 'Farms', data: d.series.farms.map((x) => x.count), color: '#249225' },
+            { label: 'Users', data: d.series.signups.map((x) => x.count), color: '#94A3B8' },
+            { label: 'Farms', data: d.series.farms.map((x) => x.count), color: '#2563EB' },
           ]" label="Sign-ups per day" />
         </section>
       </div>
@@ -58,14 +58,14 @@
         <section class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4 xl:col-span-2">
           <h2 class="font-semibold">Subscription revenue by month</h2>
           <p class="text-xs text-light-subtext dark:text-dark-subtext mb-3">Successful M-Pesa payments. All time: {{ kes(d.revenue.all_time) }}.</p>
-          <InsightChart type="bar" money :labels="d.revenue.months.map((m) => monthLabel(m.month))" :datasets="[{ label: 'Revenue', data: d.revenue.months.map((m) => m.amount), color: '#249225' }]" label="Revenue per month" />
+          <InsightChart type="bar" money :labels="d.revenue.months.map((m) => monthLabel(m.month))" :datasets="[{ label: 'Revenue', data: d.revenue.months.map((m) => m.amount), color: '#2563EB' }]" label="Revenue per month" />
         </section>
         <section class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4">
           <h2 class="font-semibold">Farms by billing</h2>
           <div class="mt-4 space-y-3">
             <div v-for="s in ['paid', 'trial', 'unpaid']" :key="s">
               <div class="flex justify-between text-sm"><span>{{ s === 'unpaid' ? 'Unpaid (blocked)' : s === 'trial' ? 'On trial' : 'Paying' }}</span><span class="font-semibold">{{ d.billing.status[s] }}</span></div>
-              <div class="h-2 mt-1 rounded-full bg-light-bg dark:bg-dark-bg overflow-hidden"><div :class="['h-full rounded-full', s === 'paid' ? 'bg-primary' : s === 'trial' ? 'bg-blue-500' : 'bg-red-500']" :style="{ width: pct(d.billing.status[s], d.totals.farms) }"></div></div>
+              <div class="h-2 mt-1 rounded-full bg-slate-100 dark:bg-dark-bg overflow-hidden"><div :class="['h-full rounded-full', s === 'paid' ? 'bg-emerald-500' : s === 'trial' ? 'bg-primary' : 'bg-red-500']" :style="{ width: pct(d.billing.status[s], d.totals.farms) }"></div></div>
             </div>
           </div>
           <h3 class="mt-6 text-sm font-semibold">Paying farms by plan</h3>
@@ -85,7 +85,7 @@
           <ul class="space-y-2.5">
             <li v-for="u in d.usage" :key="u.feature" class="text-sm">
               <div class="flex justify-between"><span>{{ u.feature }}</span><span class="text-light-subtext dark:text-dark-subtext">{{ u.records.toLocaleString() }} · {{ u.farms }} farms</span></div>
-              <div class="h-1.5 mt-1 rounded-full bg-light-bg dark:bg-dark-bg overflow-hidden"><div class="h-full bg-primary rounded-full" :style="{ width: pct(u.farms, d.totals.farms) }"></div></div>
+              <div class="h-1.5 mt-1 rounded-full bg-slate-100 dark:bg-dark-bg overflow-hidden"><div class="h-full bg-primary rounded-full" :style="{ width: pct(u.farms, d.totals.farms) }"></div></div>
             </li>
           </ul>
         </section>

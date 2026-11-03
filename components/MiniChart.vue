@@ -54,7 +54,7 @@ const renderChart = () => {
         {
           label: 'Logins',
           data: dataPoints,
-          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--tw-color-primary') || '#249225',
+          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--tw-color-primary') || '#2563EB',
           backgroundColor: 'rgba(36, 146, 37, 0.2)', // light green fill
           tension: 0.4,
           pointRadius: 5,
