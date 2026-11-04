@@ -105,8 +105,8 @@ onMounted(() => {
 
 
 <template>
-  <section class="relative min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg p-6" aria-label="Admin Authentication">
-    <div class="absolute right-4 top-4"><ThemeToggle /></div>
+  <section class="relative min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg py-10" aria-label="Admin Authentication">
+    <div class="absolute right-0 top-4"><ThemeToggle /></div>
     <!-- Brand -->
     <div class="flex flex-col items-center mb-8 text-center">
       <img src="/birdseye-logo.svg" alt="" class="h-14 w-14 mb-4" />
@@ -115,7 +115,7 @@ onMounted(() => {
     </div>
 
     <!-- Form Container -->
-    <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg p-10 border border-gray-200 dark:border-gray-700">
+    <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg p-5 sm:p-10 border border-gray-200 dark:border-gray-700">
       <transition name="fade-slide" mode="out-in">
         <form :key="isLogin" @submit.prevent="handleSubmit" autocomplete="on" novalidate class="space-y-6" aria-live="polite">
           <h1 class="text-xl font-semibold text-light-text dark:text-dark-text mb-6">
@@ -146,8 +146,9 @@ onMounted(() => {
             <input id="email" name="email" type="email" v-model="form.email" placeholder="you@example.com" required autocomplete="email" class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
           </div>
 
-          <div class="relative">
+          <div>
             <label for="password" class="block mb-2 font-semibold text-gray-700 dark:text-gray-300">Password</label>
+            <div class="relative">
             <input :type="showPassword ? 'text' : 'password'" id="password" v-model="form.password" placeholder="Enter your password" required minlength="8" class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 pr-10 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
             <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 dark:text-gray-400 hover:text-primary focus:outline-none" tabindex="-1">
               <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -158,6 +159,7 @@ onMounted(() => {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.535-4.665M6.88 6.88A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7-.179.57-.426 1.123-.735 1.64m-3.28 3.28L3 3" />
               </svg>
             </button>
+            </div>
           </div>
 
           <div v-if="!isLogin" class="relative">
