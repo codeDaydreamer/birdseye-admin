@@ -16,20 +16,6 @@
         </span>
       </button>
 
-      <!-- Toggle Admin Registration -->
-      <button
-        class="group flex flex-col items-center justify-center p-4 shadow-sm transition-all duration-200 text-center"
-        :class="allowRegistration ? 'bg-green-200 dark:bg-green-700 hover:shadow-md' : 'bg-accent/20 dark:bg-dark-accent hover:shadow-md'"
-        @click="allowRegistration = !allowRegistration"
-      >
-        <div class="text-3xl mb-2 text-primary group-hover:scale-110 transition-transform duration-200">
-          <i class="mdi mdi-account-key" />
-        </div>
-        <span class="text-sm font-medium text-light-text dark:text-dark-text">
-          {{ allowRegistration ? 'Admin Registration Enabled' : 'Enable Admin Registration' }}
-        </span>
-      </button>
-
       <!-- Other Actions -->
       <NuxtLink
         v-for="action in filteredActions"
@@ -49,21 +35,14 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
-import { useAdminAuthStore } from '~/stores/adminAuth'
+import { ref, computed } from 'vue'
 import UserCreateModal from '~/components/UserCreateModal.vue'
 
 const showCreateUserModal = ref(false)
-const store = useAdminAuthStore()
-
-// Bind allowRegistration flag to store
-const allowRegistration = ref(store.allowRegistration)
-watch(allowRegistration, (val) => {
-  store.allowRegistration = val
-})
 
 // Actions list without "Subscription Plans"
 const otherActions = [
+  { label: 'Invite an admin', link: '/team', icon: 'mdi mdi-account-key' },
   { label: 'View All Users', link: '/users', icon: 'mdi mdi-account-group-outline' },
   { label: 'View Reports', link: '/reports', icon: 'mdi mdi-file-plus-outline' },
   { label: 'View Logs', link: '/logs', icon: 'mdi mdi-lock-alert' },

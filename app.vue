@@ -21,8 +21,8 @@ onMounted(async () => {
   // Restore token from localStorage and fetch user info if token exists
   await authStore.initialize()
 
-  // If not authenticated, redirect to /auth
-  if (!authStore.isAuthenticated) {
+  // If not authenticated, go to sign-in (invite links work signed out)
+  if (!authStore.isAuthenticated && !router.currentRoute.value.path.startsWith('/invite/')) {
     router.push('/auth')
   }
 })

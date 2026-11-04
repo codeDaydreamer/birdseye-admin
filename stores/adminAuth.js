@@ -8,7 +8,6 @@ export const useAdminAuthStore = defineStore('adminAuth', {
     loading: false,
     error: '',
     router: null,        // store router instance here
-    allowRegistration: false, // <-- NEW FLAG
   }),
 
   actions: {
@@ -16,28 +15,29 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       this.router = router
     },
 
-    enableRegistration() {
-      this.allowRegistration = true
+    // signIn keeps a token from setup, invite acceptance or login and opens the console
+    signIn(res) {
+      this.token = res.data.token || ''
+      this.admin = res.data.admin || null
+      if (process.client) localStorage.setItem('token', this.token)
+      if (this.router) this.router.push('/')
     },
 
-    disableRegistration() {
-      this.allowRegistration = false
-    },
-
-    async registerAdmin(data) {
-      if (!this.allowRegistration) {
-        this.error = 'Admin registration is disabled'
-        return
+    async setupStatus() {
+      try {
+        const res = await useApi().get('/auth/admin/status')
+        return !!res.data.setup_required
+      } catch {
+        return false
       }
+    },
 
+    // Creates the first admin; only works while the console has no admins
+    async setupFirstAdmin(data) {
       this.loading = true
       this.error = ''
       try {
-        const api = useApi()
-        const res = await api.post('/auth/admin/register', data)
-        this.admin = res.data
-        // Optionally disable registration after adding an admin
-        this.allowRegistration = false
+        this.signIn(await useApi().post('/auth/admin/register', data))
       } catch (err) {
         this.error = err.response?.data?.error || err.message
       } finally {

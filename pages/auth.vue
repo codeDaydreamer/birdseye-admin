@@ -1,185 +1,106 @@
 <script setup>
-import { reactive, ref, watch, onMounted } from 'vue'
+// Sign-in to the console. While no admin exists yet it shows the one-time setup instead, which
+// creates the first admin (that account can never be removed or have its role changed). After
+// that there is no sign-up: other admins join through an invite from the Team page.
+import { reactive, ref, onMounted } from 'vue'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 import { useRouter } from 'vue-router'
-import { definePageMeta } from '#imports'
 
-// Page meta
 definePageMeta({
   layout: 'auth',
-  meta: [
-    { name: 'description', content: 'Admin console login and registration' },
-    { name: 'robots', content: 'noindex, nofollow' }
-  ]
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }]
 })
 
-// Stores & router
 const store = useAdminAuthStore()
 const router = useRouter()
 
-// State
-const isLogin = ref(true)
+const mode = ref('loading') // loading | setup | login
 const showPassword = ref(false)
-const showConfirmPassword = ref(false)
+const form = reactive({ username: '', email: '', password: '', passwordConfirm: '' })
+const localError = ref('')
 
-// Form data
-const form = reactive({
-  username: '',
-  email: '',
-  password: '',
-  passwordConfirm: ''
+onMounted(async () => {
+  store.initRouter(router) // browser only: a router in the store breaks server rendering
+  mode.value = (await store.setupStatus()) ? 'setup' : 'login'
 })
 
-// Sync local flag with store
-const allowAdminRegistration = ref(store.allowRegistration)
-
-// Keep local ref in sync with store
-watch(() => store.allowRegistration, (val) => {
-  allowAdminRegistration.value = val
-  if (!val && !isLogin.value) {
-    isLogin.value = true
-  }
-})
-
-// Reset form
-function resetForm() {
-  form.username = ''
-  form.email = ''
-  form.password = ''
-  form.passwordConfirm = ''
-  showPassword.value = false
-  showConfirmPassword.value = false
-  store.error = ''
-}
-
-// Toggle login/register view
-function toggleForm() {
-  if (!allowAdminRegistration.value && !isLogin.value) {
-    alert('Admin registration is disabled.')
-    return
-  }
-  isLogin.value = !isLogin.value
-  resetForm()
-}
-
-// Handle form submit
 async function handleSubmit() {
+  localError.value = ''
   store.error = ''
-
-  if (!isLogin.value && form.password !== form.passwordConfirm) {
-    store.error = 'Passwords do not match'
-    return
-  }
-
-  try {
-    if (isLogin.value) {
-      await store.loginAdmin({ identifier: form.email, password: form.password })
-      if (!store.error) {
-        router.push('/')
-      }
-    } else {
-      if (!allowAdminRegistration.value) {
-        store.error = 'Registration is currently disabled'
-        return
-      }
-      await store.registerAdmin({
-        username: form.username,
-        email: form.email,
-        password: form.password
-      })
-      if (!store.error) {
-        isLogin.value = true
-        resetForm()
-      }
-    }
-  } catch {
-    // Errors are handled in the store
+  if (mode.value === 'setup') {
+    if (form.password.length < 10) { localError.value = 'Use a password of at least 10 characters'; return }
+    if (form.password !== form.passwordConfirm) { localError.value = 'Passwords do not match'; return }
+    await store.setupFirstAdmin({ username: form.username, email: form.email, password: form.password })
+    // Someone else finished setup first: fall back to sign-in
+    if (store.error && /already done/.test(store.error)) mode.value = 'login'
+  } else {
+    await store.loginAdmin({ identifier: form.email, password: form.password })
   }
 }
 
-// Initialize flag from store when page mounts
-onMounted(() => {
-  allowAdminRegistration.value = store.allowRegistration
-});
+const input = 'w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
+const label = 'block mb-2 font-semibold text-gray-700 dark:text-gray-300'
 </script>
 
-
 <template>
-  <section class="relative min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg py-10" aria-label="Admin Authentication">
+  <section class="relative min-h-screen flex flex-col justify-center bg-light-bg dark:bg-dark-bg py-10" aria-label="Admin sign-in">
     <div class="absolute right-0 top-4"><ThemeToggle /></div>
-    <!-- Brand -->
+
     <div class="flex flex-col items-center mb-8 text-center">
       <img src="/birdseye-logo.svg" alt="" class="h-14 w-14 mb-4" />
       <h2 class="text-2xl font-semibold tracking-tight text-light-text dark:text-dark-text">Birdseye Admin</h2>
-      <p class="mt-1 text-sm text-light-subtext dark:text-dark-subtext" aria-live="polite">{{ isLogin ? 'Sign in to the console' : 'Create an admin account' }}</p>
+      <p class="mt-1 text-sm text-light-subtext dark:text-dark-subtext">{{ mode === 'setup' ? 'First-time setup' : 'Sign in to the console' }}</p>
     </div>
 
-    <!-- Form Container -->
     <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg p-5 sm:p-10 border border-gray-200 dark:border-gray-700">
-      <transition name="fade-slide" mode="out-in">
-        <form :key="isLogin" @submit.prevent="handleSubmit" autocomplete="on" novalidate class="space-y-6" aria-live="polite">
-          <h1 class="text-xl font-semibold text-light-text dark:text-dark-text mb-6">
-            {{ isLogin ? 'Admin Login' : 'Admin Registration' }}
-          </h1>
+      <div v-if="mode === 'loading'" class="h-64 animate-pulse rounded-md bg-gray-100 dark:bg-gray-800"></div>
 
-          <!-- Registration Fields -->
-          <template v-if="!isLogin">
-            <div>
-              <label for="username" class="block mb-2 font-semibold text-gray-700 dark:text-gray-300">Username</label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                v-model="form.username"
-                placeholder="Choose a username"
-                required
-                autocomplete="username"
-                spellcheck="false"
-                class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-              />
-            </div>
-          </template>
+      <form v-else @submit.prevent="handleSubmit" autocomplete="on" class="space-y-6">
+        <div>
+          <h1 class="text-xl font-semibold text-light-text dark:text-dark-text">{{ mode === 'setup' ? 'Create the first admin' : 'Admin login' }}</h1>
+          <p v-if="mode === 'setup'" class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            This page shows only once, while the console has no admins. This first account can never be removed and its
+            role can't change. Invite everyone else from the Team page.
+          </p>
+        </div>
 
-          <!-- Common Fields -->
-          <div>
-            <label for="email" class="block mb-2 font-semibold text-gray-700 dark:text-gray-300">Email address</label>
-            <input id="email" name="email" type="email" v-model="form.email" placeholder="you@example.com" required autocomplete="email" class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
-          </div>
+        <div v-if="mode === 'setup'">
+          <label for="username" :class="label">Username</label>
+          <input id="username" v-model="form.username" type="text" required autocomplete="username" spellcheck="false" placeholder="Choose a username" :class="input" />
+        </div>
 
-          <div>
-            <label for="password" class="block mb-2 font-semibold text-gray-700 dark:text-gray-300">Password</label>
-            <div class="relative">
-            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="form.password" placeholder="Enter your password" required minlength="8" class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 pr-10 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
-            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 dark:text-gray-400 hover:text-primary focus:outline-none" tabindex="-1">
-              <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.535-4.665M6.88 6.88A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7-.179.57-.426 1.123-.735 1.64m-3.28 3.28L3 3" />
-              </svg>
+        <div>
+          <label for="email" :class="label">{{ mode === 'setup' ? 'Email address' : 'Email or username' }}</label>
+          <input id="email" v-model="form.email" :type="mode === 'setup' ? 'email' : 'text'" required :autocomplete="mode === 'setup' ? 'email' : 'username'" placeholder="you@example.com" :class="input" />
+        </div>
+
+        <div>
+          <label for="password" :class="label">Password</label>
+          <div class="relative">
+            <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'" required :minlength="mode === 'setup' ? 10 : 1"
+              :autocomplete="mode === 'setup' ? 'new-password' : 'current-password'" :placeholder="mode === 'setup' ? 'At least 10 characters' : 'Enter your password'" :class="[input, 'pr-10']" />
+            <button type="button" class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 dark:text-gray-400 hover:text-primary" tabindex="-1"
+              :aria-label="showPassword ? 'Hide password' : 'Show password'" @click="showPassword = !showPassword">
+              <i :class="['mdi text-xl', showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline']"></i>
             </button>
-            </div>
           </div>
+        </div>
 
-          <div v-if="!isLogin" class="relative">
-            <label for="passwordConfirm" class="block mb-2 font-semibold text-gray-700 dark:text-gray-300">Confirm Password</label>
-            <input :type="showConfirmPassword ? 'text' : 'password'" id="passwordConfirm" v-model="form.passwordConfirm" placeholder="Confirm your password" required minlength="8" class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-3 pr-10 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
-          </div>
+        <div v-if="mode === 'setup'">
+          <label for="passwordConfirm" :class="label">Confirm password</label>
+          <input id="passwordConfirm" v-model="form.passwordConfirm" :type="showPassword ? 'text' : 'password'" required autocomplete="new-password" :class="input" />
+        </div>
 
-          <button :disabled="store.loading" type="submit" class="w-full py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-md transition-colors disabled:opacity-50">
-            {{ isLogin ? 'Login' : 'Register' }}
-          </button>
+        <p v-if="localError || store.error" role="alert" class="rounded-md bg-red-50 dark:bg-red-950/40 px-3 py-2 text-sm text-red-700 dark:text-red-300">{{ localError || store.error }}</p>
 
-          <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none" @click="toggleForm" role="button" tabindex="0" @keydown.enter="toggleForm">
-            {{ isLogin ? "Don't have an account? Register here" : 'Already have an account? Login' }}
-          </p>
+        <button :disabled="store.loading" type="submit" class="w-full py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-md transition-colors disabled:opacity-50">
+          {{ store.loading ? 'Please wait...' : mode === 'setup' ? 'Create admin and sign in' : 'Login' }}
+        </button>
 
-          <p v-if="store.error" role="alert" class="mt-4 text-center text-danger font-medium">
-            {{ store.error }}
-          </p>
-        </form>
-      </transition>
+        <p v-if="mode === 'login'" class="text-center text-sm text-gray-600 dark:text-gray-400">
+          Need access? Ask an admin to invite you from the Team page.
+        </p>
+      </form>
     </div>
   </section>
 </template>

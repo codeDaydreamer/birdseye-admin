@@ -15,10 +15,8 @@ export function useApi() {
     const token = authStore.token
 
     // Paths that do NOT require a token
-    const openPaths = ['/auth/admin/register', '/auth/admin/login']
-
-    // If the request URL ends with one of these paths, skip token check
-    if (openPaths.some(path => config.url?.endsWith(path))) {
+    // Setup, sign-in and invite acceptance work without a token
+    if (config.url?.startsWith('/auth/admin/')) {
       return config
     }
 
