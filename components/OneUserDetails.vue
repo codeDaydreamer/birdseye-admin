@@ -120,41 +120,21 @@
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="flex justify-center flex-wrap gap-4 pt-6">
+    <!-- Actions: equal widths, one per row on phones -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 max-w-3xl mx-auto">
       <button
-        class="btn btn-lg hover:scale-105 p-3 rounded-lg"
-        :class="[
-          user.status === 'suspended' 
-            ? 'bg-green-600 dark:bg-green-700 text-white'
-            : 'bg-yellow-500 dark:bg-yellow-600 text-white'
-        ]"
+        :class="['h-11 w-full inline-flex items-center justify-center gap-2 px-4 rounded-lg text-white font-semibold transition hover:brightness-110 disabled:opacity-50', user.status === 'suspended' ? 'bg-green-600 dark:bg-green-700' : 'bg-amber-500 dark:bg-amber-600']"
         @click="toggleSuspendUser"
         :disabled="loading"
       >
-        <i
-          :class="[
-            'mdi text-lg mr-1',
-            user.status === 'suspended' ? 'mdi-account-check' : 'mdi-account-off'
-          ]"
-        ></i>
+        <i :class="['mdi text-lg', user.status === 'suspended' ? 'mdi-account-check' : 'mdi-account-off']"></i>
         {{ user.status === 'suspended' ? 'Reactivate' : 'Suspend' }}
       </button>
-
-      <button
-        class="btn btn-danger btn-lg bg-red-600 dark:bg-red-700 hover:scale-105 p-3 rounded-lg"
-        @click="deleteUserConfirm"
-        :disabled="loading"
-      >
-        <i class="mdi mdi-delete text-lg mr-1"></i> Delete User
+      <button class="h-11 w-full inline-flex items-center justify-center gap-2 px-4 rounded-lg text-white font-semibold transition hover:brightness-110 disabled:opacity-50 bg-red-600 dark:bg-red-700" @click="deleteUserConfirm" :disabled="loading">
+        <i class="mdi mdi-delete text-lg"></i> Delete user
       </button>
-
-      <button
-        class="btn btn-info btn-lg bg-blue-500 dark:bg-blue-600 hover:scale-105 p-3 rounded-lg"
-        @click="showChangePasswordModal = true"
-        :disabled="loading"
-      >
-        <i class="mdi mdi-lock-reset text-lg mr-1"></i> Change Password
+      <button class="h-11 w-full inline-flex items-center justify-center gap-2 px-4 rounded-lg text-white font-semibold transition hover:brightness-110 disabled:opacity-50 bg-primary" @click="showChangePasswordModal = true" :disabled="loading">
+        <i class="mdi mdi-lock-reset text-lg"></i> Change password
       </button>
     </div>
 

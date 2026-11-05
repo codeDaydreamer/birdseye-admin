@@ -55,7 +55,7 @@
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-            <div class="flex justify-between items-center pt-6">
+            <div class="grid grid-cols-2 gap-3 pt-6 sm:flex sm:justify-between">
               <button
                 type="button"
                 class="btn btn-secondary"

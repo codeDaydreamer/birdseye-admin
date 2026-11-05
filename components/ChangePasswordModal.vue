@@ -40,7 +40,7 @@
             autocomplete="new-password"
           />
 
-          <div class="flex justify-end space-x-4">
+          <div class="grid grid-cols-2 gap-3 sm:flex sm:justify-end">
             <button
               type="button"
               @click="close"

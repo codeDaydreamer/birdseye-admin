@@ -4,7 +4,7 @@
       <h1 class="text-2xl font-bold">Activity</h1>
       <p class="text-sm text-light-subtext dark:text-dark-subtext">Sign-ups, new farms, payments, staff joining and new batches, newest first.</p>
     </div>
-    <div class="flex flex-wrap gap-2">
+    <div class="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
       <button v-for="k in kinds" :key="k.value" :class="['px-3 py-1.5 rounded-full text-sm', kind === k.value ? 'bg-primary text-white' : 'bg-light-accent dark:bg-dark-accent']" @click="kind = k.value">{{ k.label }}</button>
     </div>
     <section class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4">

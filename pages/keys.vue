@@ -15,9 +15,9 @@
     </div>
 
     <div class="grid gap-6 xl:grid-cols-2">
-      <section v-for="g in groups" :key="g.id" class="rounded-xl shadow bg-light-accent dark:bg-dark-accent p-5 flex flex-col">
+      <section v-for="g in groups" :key="g.id" class="min-w-0 rounded-xl shadow bg-light-accent dark:bg-dark-accent p-4 sm:p-5 flex flex-col">
         <div class="flex items-start justify-between gap-3">
-          <div>
+          <div class="min-w-0">
             <h2 class="font-semibold flex items-center gap-2"><i :class="['mdi', icons[g.id]]"></i>{{ g.title }}</h2>
             <p class="text-xs text-light-subtext dark:text-dark-subtext mt-0.5">{{ g.about }}</p>
           </div>
@@ -47,7 +47,7 @@
                 class="mt-1 w-full p-2 text-xs font-mono border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border placeholder:text-light-subtext/50 dark:placeholder:text-dark-subtext/40"></textarea>
               <div v-else class="mt-1 flex gap-2">
                 <input :id="f.key" v-model="draft[f.key]" :type="f.secret && !reveal[f.key] ? 'password' : 'text'" :placeholder="f.placeholder" spellcheck="false" autocomplete="off"
-                  class="flex-1 p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border placeholder:text-light-subtext/50 dark:placeholder:text-dark-subtext/40" />
+                  class="flex-1 min-w-0 p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border placeholder:text-light-subtext/50 dark:placeholder:text-dark-subtext/40" />
                 <button v-if="f.secret" type="button" class="px-2 text-light-subtext dark:text-dark-subtext" :aria-label="reveal[f.key] ? 'Hide' : 'Show'" @click="reveal[f.key] = !reveal[f.key]">
                   <i :class="['mdi', reveal[f.key] ? 'mdi-eye-off-outline' : 'mdi-eye-outline']"></i>
                 </button>
@@ -58,11 +58,11 @@
           </div>
         </div>
 
-        <div class="mt-5 pt-4 border-t border-light-border/40 dark:border-dark-border flex flex-wrap items-center gap-2">
-          <button class="px-3 py-2 text-sm rounded-lg bg-primary text-white disabled:opacity-50" :disabled="!changed(g)" @click="askSave(g)">Save</button>
+        <div class="mt-5 pt-4 border-t border-light-border/40 dark:border-dark-border grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+          <button :class="['px-3 py-2 text-sm rounded-lg bg-primary text-white disabled:opacity-50', !hasExtra(g) && 'col-span-2 sm:col-auto']" :disabled="!changed(g)" @click="askSave(g)">Save</button>
           <template v-if="g.id === 'email'">
             <input v-model="testTo" type="email" placeholder="you@example.com" aria-label="Send a test email to"
-              class="flex-1 min-w-[10rem] p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border placeholder:text-light-subtext/50 dark:placeholder:text-dark-subtext/40" />
+              class="col-span-2 order-first sm:order-none sm:flex-1 min-w-0 sm:min-w-[10rem] p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border placeholder:text-light-subtext/50 dark:placeholder:text-dark-subtext/40" />
             <button class="px-3 py-2 text-sm rounded-lg border border-light-border dark:border-dark-border disabled:opacity-50" :disabled="!testTo || busy.email" @click="testEmail">Send test</button>
           </template>
           <button v-if="g.id === 'dynapay'" class="px-3 py-2 text-sm rounded-lg border border-light-border dark:border-dark-border disabled:opacity-50" :disabled="busy.dynapay" @click="testDynapay">Test connection</button>
@@ -96,6 +96,8 @@ import { ago } from '~/composables/format'
 
 const api = useApi()
 const groups = ref([])
+// Groups with a second action next to Save (the two share the footer row evenly on phones)
+const hasExtra = (g) => ['email', 'dynapay', 'push'].includes(g.id)
 const error = ref('')
 const draft = reactive({})
 const editing = reactive({})

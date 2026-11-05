@@ -7,7 +7,7 @@
           Plans farms can buy, promo codes, and the free trial. Changes apply straight away.
         </p>
       </div>
-      <div class="flex gap-2">
+      <div class="grid w-full sm:w-auto gap-2 sm:flex" :style="{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }">
         <button
           v-for="t in tabs"
           :key="t.key"
@@ -196,7 +196,7 @@
           <input v-model.number="planForm.sort_order" type="number" :class="inputClass" />
         </div>
         <p v-if="formError" class="text-red-600 text-sm">{{ formError }}</p>
-        <div class="flex justify-end gap-3 pt-2">
+        <div class="grid grid-cols-2 gap-3 pt-2 sm:flex sm:justify-end">
           <button type="button" @click="planForm = null" class="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border">Cancel</button>
           <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-white">Save plan</button>
         </div>
@@ -251,7 +251,7 @@
         </div>
         <label class="flex items-center gap-3"><input v-model="promoForm.is_active" type="checkbox" class="w-5 h-5" /> Active</label>
         <p v-if="formError" class="text-red-600 text-sm">{{ formError }}</p>
-        <div class="flex justify-end gap-3 pt-2">
+        <div class="grid grid-cols-2 gap-3 pt-2 sm:flex sm:justify-end">
           <button type="button" @click="promoForm = null" class="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border">Cancel</button>
           <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-white">Save code</button>
         </div>

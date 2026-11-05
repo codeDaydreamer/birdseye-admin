@@ -44,16 +44,16 @@
           </dl>
           <div class="pt-3 border-t border-light-border/40 dark:border-dark-border space-y-2">
             <div class="flex gap-2">
-              <select v-model.number="extendDays" class="flex-1 p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border" aria-label="Extend trial by">
+              <select v-model.number="extendDays" class="flex-1 min-w-0 p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border" aria-label="Extend trial by">
                 <option :value="7">7 days</option><option :value="14">14 days</option><option :value="30">30 days</option>
               </select>
-              <button class="px-3 py-2 text-sm rounded-lg bg-primary text-white disabled:opacity-50" :disabled="busy" @click="extendTrial">Extend trial</button>
+              <button class="w-28 shrink-0 px-3 py-2 text-sm rounded-lg bg-primary text-white disabled:opacity-50" :disabled="busy" @click="extendTrial">Extend trial</button>
             </div>
             <div class="flex gap-2">
-              <select v-model="planId" class="flex-1 p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border" aria-label="Plan">
+              <select v-model="planId" class="flex-1 min-w-0 p-2 text-sm border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border" aria-label="Plan">
                 <option v-for="p in plans" :key="p.id" :value="p.id">{{ p.name }} (KES {{ p.monthly_price }}/mo)</option>
               </select>
-              <button class="px-3 py-2 text-sm rounded-lg border border-light-border dark:border-dark-border disabled:opacity-50" :disabled="busy || planId === d.farm.plan_id" @click="changePlan">Set plan</button>
+              <button class="w-28 shrink-0 px-3 py-2 text-sm rounded-lg border border-light-border dark:border-dark-border disabled:opacity-50" :disabled="busy || planId === d.farm.plan_id" @click="changePlan">Set plan</button>
             </div>
             <p v-if="notice" :class="['text-xs', notice.error ? 'text-red-600' : 'text-green-700']">{{ notice.text }}</p>
           </div>

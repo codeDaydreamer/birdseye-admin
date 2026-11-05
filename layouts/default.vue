@@ -17,14 +17,15 @@
           class="sidebar z-40"
           @toggleCollapse="toggleSidebar"
           @toggleMobile="toggleSidebar"
+          @navigate="isSidebarOpen = false"
         />
       </transition>
 
       <!-- Mobile overlay -->
       <div
         v-if="isMobile && isSidebarOpen"
-        class="fixed inset-0 bg-black bg-opacity-50 z-30"
-        @click="toggleSidebar"
+        class="fixed inset-0 bg-black/50 z-30"
+        @click="isSidebarOpen = false"
       ></div>
 
       <!-- Main content -->
@@ -34,7 +35,7 @@
           'ml-64': !isCollapsed && !isMobile,
           'ml-0': isMobile
         }"
-        class="flex-1 p-6 overflow-auto transition-all duration-300 ease-in-out"
+        class="flex-1 min-w-0 p-4 md:p-6 overflow-auto transition-all duration-300 ease-in-out"
       >
         <NuxtPage />
       </main>
@@ -45,7 +46,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
 import Header from '~/components/Header.vue'
 import Sidebar from '~/components/Sidebar.vue'
 import Footer from '~/components/Footer.vue'
@@ -55,6 +57,10 @@ const isCollapsed = ref(false)    // desktop collapse
 const isMobile = ref(false)
 const isSidebarOpen = ref(false)  // mobile open
 const authStore = useAdminAuthStore()
+const route = useRoute()
+
+// On phones the menu is an overlay: close it whenever the page changes
+watch(() => route.fullPath, () => { isSidebarOpen.value = false })
 
 // Detect mobile
 const checkMobile = () => {

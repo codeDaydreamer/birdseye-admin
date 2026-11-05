@@ -73,7 +73,7 @@
         <div>
           <label class="block text-sm mb-1">Trial ends on</label>
           <input v-model="editing.trialDate" type="date" class="w-full p-2 border rounded-lg bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border" />
-          <div class="flex gap-2 mt-2 text-xs">
+          <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
             <button v-for="d in [7, 14, 30]" :key="d" type="button" @click="extendBy(d)" class="px-2 py-1 rounded border border-light-border dark:border-dark-border">
               +{{ d }} days from today
             </button>
@@ -90,7 +90,7 @@
           </p>
         </div>
         <p v-if="formError" class="text-red-600 text-sm">{{ formError }}</p>
-        <div class="flex justify-end gap-3 pt-2">
+        <div class="grid grid-cols-2 gap-3 pt-2 sm:flex sm:justify-end">
           <button type="button" @click="editing = null" class="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border">Cancel</button>
           <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-white">Save</button>
         </div>

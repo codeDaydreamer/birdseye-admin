@@ -98,10 +98,10 @@ export const useAdminAuthStore = defineStore('adminAuth', {
       try {
         const api = useApi()
         const res = await api.get('/admin/me')
-        this.admin = res.data
+        this.admin = res.data.admin || null
       } catch (err) {
         this.error = err.response?.data?.error || err.message
-        this.logout()
+        if (err.response?.status === 401) this.logout()
       } finally {
         this.loading = false
       }
